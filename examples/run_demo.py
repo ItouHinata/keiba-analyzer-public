@@ -16,6 +16,10 @@ from keiba_analyzer.scoring.base_speed import (  # noqa: E402
     score_position_maintenance,
     score_tracking_speed,
 )
+from keiba_analyzer.scoring.race_context import (  # noqa: E402
+    classify_surface_flow,
+    position_ability_weights,
+)
 
 
 def build_synthetic_run(
@@ -71,7 +75,24 @@ def main() -> None:
     ]
 
     result = aggregate_horse_scores(runs)
-    print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+    regime = classify_surface_flow(
+        friction=0.20,
+        grip=0.82,
+        middle_relief=0.25,
+        continuous_flow=0.70,
+        pace_consumption=0.55,
+    )
+    output = {
+        "base_speed": result.to_dict(),
+        "race_context": {
+            "regime": regime.to_dict(),
+            "position_ability_weights": {
+                position: position_ability_weights(regime, position)
+                for position in ("FRONT", "MIDDLE", "REAR")
+            },
+        },
+    }
+    print(json.dumps(output, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

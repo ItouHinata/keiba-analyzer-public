@@ -12,6 +12,13 @@ from .base_speed import (
     score_position_maintenance,
     score_tracking_speed,
 )
+from .race_context import (
+    ABILITY_CODES,
+    POSITION_MULTIPLIERS,
+    SurfaceFlowRegime,
+    classify_surface_flow,
+    position_ability_weights,
+)
 
 __all__ = [
     "AggregateResult",
@@ -24,4 +31,9 @@ __all__ = [
     "score_non_deceleration",
     "score_position_maintenance",
     "score_tracking_speed",
+    "ABILITY_CODES",
+    "POSITION_MULTIPLIERS",
+    "SurfaceFlowRegime",
+    "classify_surface_flow",
+    "position_ability_weights",
 ]
