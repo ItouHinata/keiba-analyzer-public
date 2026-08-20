@@ -20,6 +20,17 @@ from keiba_analyzer.scoring.race_context import (  # noqa: E402
     classify_surface_flow,
     position_ability_weights,
 )
+from keiba_analyzer.scoring.max_speed_expression import (  # noqa: E402
+    ReserveObservation,
+    express_max_speed,
+    fit_max_speed_profile,
+)
+from keiba_analyzer.scoring.lap_based_leader import (  # noqa: E402
+    LeaderCandidate,
+    classify_leader,
+    evaluate_vacancy_pressure,
+    no_clear_leader_probability,
+)
 
 
 def build_synthetic_run(
@@ -82,6 +93,26 @@ def main() -> None:
         continuous_flow=0.70,
         pace_consumption=0.55,
     )
+    max_speed_profile = fit_max_speed_profile(
+        [
+            ReserveObservation(0.82, 18.20, 0.92),
+            ReserveObservation(0.48, 17.78, 0.86),
+            ReserveObservation(0.24, 17.31, 0.80),
+        ],
+        population_slope=0.90,
+    )
+    max_speed = express_max_speed(max_speed_profile, remaining_energy=0.41)
+    leader_candidates = [
+        LeaderCandidate("sample-horse-a", 0.86, 0.68, 0.20, 0.91),
+        LeaderCandidate("sample-horse-b", 0.88, 0.18, 0.72, 0.88),
+    ]
+    vacancy = evaluate_vacancy_pressure(
+        field_pace_pressure=0.44,
+        leader_battle=0.32,
+        front_mass=0.46,
+        stalking_pressure=0.41,
+        makuri_pressure=0.20,
+    )
     output = {
         "base_speed": result.to_dict(),
         "race_context": {
@@ -90,6 +121,20 @@ def main() -> None:
                 position: position_ability_weights(regime, position)
                 for position in ("FRONT", "MIDDLE", "REAR")
             },
+        },
+        "max_speed_expression": {
+            "profile": max_speed_profile.to_dict(),
+            "target_race": max_speed.to_dict(),
+        },
+        "leader_forecast": {
+            "candidates": [
+                classify_leader(candidate).to_dict()
+                for candidate in leader_candidates
+            ],
+            "no_clear_leader_probability": no_clear_leader_probability(
+                leader_candidates
+            ),
+            "vacancy_pressure": vacancy.to_dict(),
         },
     }
     print(json.dumps(output, ensure_ascii=False, indent=2))

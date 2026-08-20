@@ -1,51 +1,79 @@
 {
-  "central_score": 8.77,
-  "lower_score": 8.166,
-  "upper_score": 9.373,
-  "confidence": 0.853,
-  "runs_used": 5,
-  "stability_score": 0.522,
-  "status": "ESTIMATED",
-  "selected_runs": [
-    {
-      "label": "sample-run-1",
-      "score": 10.0,
-      "confidence": 0.91,
-      "recency_rank": 1,
-      "status": "MEASURED",
-      "evidence_strength": 9.1
+  "base_speed": {
+    "central_score": 8.77,
+    "lower_score": 8.166,
+    "upper_score": 9.373,
+    "confidence": 0.853,
+    "runs_used": 5,
+    "stability_score": 0.522,
+    "status": "ESTIMATED",
+    "selected_runs": [
+      {
+        "label": "sample-run-1",
+        "score": 10.0,
+        "confidence": 0.91,
+        "recency_rank": 1,
+        "status": "MEASURED",
+        "evidence_strength": 9.1
+      },
+      {
+        "label": "sample-run-2",
+        "score": 9.06,
+        "confidence": 0.86,
+        "recency_rank": 2,
+        "status": "MEASURED",
+        "evidence_strength": 7.7916
+      },
+      {
+        "label": "sample-run-4",
+        "score": 8.2,
+        "confidence": 0.8,
+        "recency_rank": 4,
+        "status": "MEASURED",
+        "evidence_strength": 6.56
+      },
+      {
+        "label": "sample-run-3",
+        "score": 7.8,
+        "confidence": 0.82,
+        "recency_rank": 3,
+        "status": "MEASURED",
+        "evidence_strength": 6.396
+      },
+      {
+        "label": "sample-run-5",
+        "score": 5.72,
+        "confidence": 0.76,
+        "recency_rank": 5,
+        "status": "ESTIMATED",
+        "evidence_strength": 4.3472
+      }
+    ]
+  },
+  "race_context": {
+    "regime": {
+      "code": "LOW_FRICTION_HIGH_GRIP_FLOWING",
+      "friction_band": "LOW_FRICTION",
+      "grip_band": "HIGH_GRIP",
+      "pace_style": "FLOWING",
+      "flow_signal": 0.667
     },
-    {
-      "label": "sample-run-2",
-      "score": 9.06,
-      "confidence": 0.86,
-      "recency_rank": 2,
-      "status": "MEASURED",
-      "evidence_strength": 7.7916
-    },
-    {
-      "label": "sample-run-4",
-      "score": 8.2,
-      "confidence": 0.8,
-      "recency_rank": 4,
-      "status": "MEASURED",
-      "evidence_strength": 6.56
-    },
-    {
-      "label": "sample-run-3",
-      "score": 7.8,
-      "confidence": 0.82,
-      "recency_rank": 3,
-      "status": "MEASURED",
-      "evidence_strength": 6.396
-    },
-    {
-      "label": "sample-run-5",
-      "score": 5.72,
-      "confidence": 0.76,
-      "recency_rank": 5,
-      "status": "ESTIMATED",
-      "evidence_strength": 4.3472
+    "position_ability_weights": {
+      "FRONT": {"BASE_SPEED": 0.1455, "MAX_SPEED": 0.2505, "GEAR_CHANGE": 0.1253, "LONG_SPRINT": 0.2929, "STAMINA": 0.1859},
+      "MIDDLE": {"BASE_SPEED": 0.1584, "MAX_SPEED": 0.2416, "GEAR_CHANGE": 0.1188, "LONG_SPRINT": 0.2931, "STAMINA": 0.1881},
+      "REAR": {"BASE_SPEED": 0.1957, "MAX_SPEED": 0.2309, "GEAR_CHANGE": 0.1076, "LONG_SPRINT": 0.274, "STAMINA": 0.1918}
     }
-  ]
+  },
+  "max_speed_expression": {
+    "profile": {"absolute_speed_mps": 18.2, "reference_remaining_energy": 0.82, "reserve_speed_slope": 1.22963, "observations_used": 3},
+    "target_race": {"absolute_speed_mps": 18.2, "effective_speed_mps": 17.69585, "expression_ratio": 0.9723, "remaining_energy": 0.41}
+  },
+  "leader_forecast": {
+    "candidates": [
+      {"horse_id": "sample-horse-a", "role": "NATURAL_LEADER", "selection_probability": 0.5506},
+      {"horse_id": "sample-horse-b", "role": "FAST_STALKER", "selection_probability": 0.146}
+    ],
+    "no_clear_leader_probability": 0.3838,
+    "vacancy_pressure": {"pressure_score": 0.44, "substantial_pressure": 0.0, "middle_lull_probability": 1.0}
+  }
 }
