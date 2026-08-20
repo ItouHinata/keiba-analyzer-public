@@ -19,6 +19,22 @@ from .race_context import (
     classify_surface_flow,
     position_ability_weights,
 )
+from .max_speed_expression import (
+    MaxSpeedExpression,
+    MaxSpeedProfile,
+    ReserveObservation,
+    express_max_speed,
+    fit_max_speed_profile,
+)
+from .lap_based_leader import (
+    LeaderAssessment,
+    LeaderCandidate,
+    VacancyPressure,
+    classify_leader,
+    evaluate_vacancy_pressure,
+    leader_settlement_distance,
+    no_clear_leader_probability,
+)
 
 __all__ = [
     "AggregateResult",
@@ -36,4 +52,16 @@ __all__ = [
     "SurfaceFlowRegime",
     "classify_surface_flow",
     "position_ability_weights",
+    "MaxSpeedExpression",
+    "MaxSpeedProfile",
+    "ReserveObservation",
+    "express_max_speed",
+    "fit_max_speed_profile",
+    "LeaderAssessment",
+    "LeaderCandidate",
+    "VacancyPressure",
+    "classify_leader",
+    "evaluate_vacancy_pressure",
+    "leader_settlement_distance",
+    "no_clear_leader_probability",
 ]

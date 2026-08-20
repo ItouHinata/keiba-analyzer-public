@@ -166,7 +166,7 @@ INSERT INTO ability_definitions (
 )
 VALUES
     ('BASE_SPEED', '基礎スピード', 1, '巡航速度と追走力'),
-    ('TOP_SPEED', '最高速度', 2, '終盤で到達できる速度'),
+    ('MAX_SPEED', '最高速度', 2, '終盤で到達できる絶対速度と今回の発揮速度'),
     ('STAMINA', 'スタミナ', 3, '距離と負荷に対する持続力'),
     ('POWER', 'パワー', 4, '重い馬場や負荷への対応力'),
     ('TIGHT_TURN', '小回り適性', 5, 'コーナーの多い条件への適応'),
@@ -267,6 +267,74 @@ CREATE TABLE IF NOT EXISTS horse_ability_estimates (
     CHECK (evaluation_status IN ('MEASURED', 'ESTIMATED', 'NOT_TESTED'))
 );
 
+-- Each ability owns its input and code fingerprint.  A recalculation can skip
+-- an ability only when both fingerprints still match.
+CREATE TABLE IF NOT EXISTS ability_input_fingerprints (
+    analysis_run_id       INTEGER NOT NULL,
+    horse_id              TEXT NOT NULL,
+    ability_code          TEXT NOT NULL,
+    input_fingerprint     TEXT NOT NULL,
+    logic_fingerprint     TEXT NOT NULL,
+    calculation_status    TEXT NOT NULL,
+    calculated_at         TEXT,
+    PRIMARY KEY (analysis_run_id, horse_id, ability_code),
+    FOREIGN KEY (analysis_run_id, horse_id)
+        REFERENCES run_entries (analysis_run_id, horse_id),
+    FOREIGN KEY (ability_code) REFERENCES ability_definitions (ability_code),
+    CHECK (calculation_status IN ('PENDING', 'CALCULATED', 'STALE', 'FAILED'))
+);
+
+-- The display ability remains the absolute peak.  Prediction code derives an
+-- effective value from remaining energy without overwriting the peak.
+CREATE TABLE IF NOT EXISTS max_speed_expression_profiles (
+    analysis_run_id              INTEGER NOT NULL,
+    horse_id                     TEXT NOT NULL,
+    model_version                TEXT NOT NULL,
+    absolute_max_speed_mps       REAL NOT NULL,
+    absolute_max_speed_score     REAL NOT NULL,
+    reference_remaining_energy   REAL NOT NULL,
+    reserve_speed_slope          REAL NOT NULL,
+    curve_points_json            TEXT NOT NULL,
+    evidence_count               INTEGER NOT NULL,
+    measurement_state            TEXT NOT NULL,
+    input_fingerprint            TEXT NOT NULL,
+    PRIMARY KEY (analysis_run_id, horse_id),
+    FOREIGN KEY (analysis_run_id, horse_id)
+        REFERENCES run_entries (analysis_run_id, horse_id),
+    CHECK (absolute_max_speed_mps > 0.0),
+    CHECK (absolute_max_speed_score BETWEEN 0.0 AND 10.0),
+    CHECK (reference_remaining_energy BETWEEN 0.0 AND 1.0),
+    CHECK (reserve_speed_slope >= 0.0),
+    CHECK (evidence_count >= 0),
+    CHECK (measurement_state IN ('MEASURED', 'ESTIMATED', 'NOT_TESTED'))
+);
+
+CREATE TABLE IF NOT EXISTS max_speed_expression_hypotheses (
+    analysis_run_id     INTEGER NOT NULL,
+    horse_id            TEXT NOT NULL,
+    hypothesis_code     TEXT NOT NULL,
+    probability         REAL NOT NULL,
+    reserve_speed_slope REAL NOT NULL,
+    PRIMARY KEY (analysis_run_id, horse_id, hypothesis_code),
+    FOREIGN KEY (analysis_run_id, horse_id)
+        REFERENCES max_speed_expression_profiles (analysis_run_id, horse_id),
+    CHECK (hypothesis_code IN ('LOW', 'CENTER', 'HIGH')),
+    CHECK (probability BETWEEN 0.0 AND 1.0),
+    CHECK (reserve_speed_slope >= 0.0)
+);
+
+CREATE TABLE IF NOT EXISTS prediction_cache_revisions (
+    analysis_run_id          INTEGER PRIMARY KEY,
+    data_revision            TEXT NOT NULL,
+    ability_revision         TEXT NOT NULL,
+    prediction_logic_hash    TEXT NOT NULL,
+    cached_result_hash       TEXT,
+    updated_at               TEXT NOT NULL DEFAULT (
+        strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    ),
+    FOREIGN KEY (analysis_run_id) REFERENCES analysis_runs (analysis_run_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_source_races_source
     ON analysis_source_races (source_race_id);
 
@@ -275,5 +343,8 @@ CREATE INDEX IF NOT EXISTS idx_scores_ability
 
 CREATE INDEX IF NOT EXISTS idx_estimates_run
     ON horse_ability_estimates (analysis_run_id, ability_code, central_score DESC);
+
+CREATE INDEX IF NOT EXISTS idx_ability_fingerprints_status
+    ON ability_input_fingerprints (analysis_run_id, calculation_status);
 
 COMMIT;
