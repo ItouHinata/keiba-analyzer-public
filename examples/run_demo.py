@@ -1,3 +1,5 @@
+"""Historical synthetic scoring demo; see run_current_contract.py for current contracts."""
+
 from __future__ import annotations
 
 import json

@@ -1,7 +1,8 @@
-"""Explainable base-speed scoring logic.
+"""Historical simplified base-speed scoring example, not the current scorer.
 
 This module is a privacy-safe, dependency-free reconstruction of the core
-ideas used in the private project. It intentionally contains no collector,
+ideas explored in the private project. Its early-600m tiers and fixed
+coefficients do not reproduce today's whole-race lap evaluation. It contains no collector,
 credentials, local paths, or collected race data.
 """
 

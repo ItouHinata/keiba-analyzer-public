@@ -1,9 +1,10 @@
-"""Two-layer maximum-speed model for the public portfolio edition.
+"""Historical reserve-curve experiment for the public portfolio edition.
 
-The private application keeps a horse's observed absolute peak separate from
-the speed that is likely to be expressed in the target race.  This module is a
-small, dependency-free reconstruction of that contract.  It contains no
-collected data and no production coefficients.
+This standalone curve is NOT the deployed pre-ranking ability calculation.
+The current app passes the absolute MAX_SPEED score through unchanged; its
+straight-reach model owns load-dependent expression. This earlier experiment
+is retained for design history and must not overwrite an ability/bar value.
+It contains no collected data and no production coefficients.
 """
 
 from __future__ import annotations
